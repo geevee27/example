@@ -1,19 +1,21 @@
 steps:
   - label: ":go: Build"
-    command: "go build -o hello-app ./hello"
+    commands:
+      - "go build -o hello-app ./hello"
+      - "buildkite-agent artifact upload hello-app"
     plugins:
       - docker#v5.11.0:
           image: "golang:1.15"
-    artifact_paths:
-      - "hello-app"
+          propagate-agent-access: true
 
   - wait
 
   - label: ":rocket: Run"
-    command: "./hello-app Buildkite"
-    depends_on: ~
+    commands:
+      - "buildkite-agent artifact download hello-app ."
+      - "chmod +x hello-app"
+      - "./hello-app Buildkite"
     plugins:
-      - artifacts#v1.9.4:
-          download: "hello-app"
       - docker#v5.11.0:
           image: "golang:1.15"
+          propagate-agent-access: true
