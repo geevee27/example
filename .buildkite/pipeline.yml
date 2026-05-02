@@ -1,4 +1,12 @@
 steps:
+  - input: "Who should we say hello to?"
+    fields:
+      - text: "Name"
+        key: "name"
+        required: true
+
+  - wait
+
   - label: ":go: Build"
     commands:
       - "go build -o hello-app ./hello"
@@ -14,7 +22,7 @@ steps:
     commands:
       - "buildkite-agent artifact download hello-app ."
       - "chmod +x hello-app"
-      - "./hello-app Buildkite"
+      - "./hello-app $$(buildkite-agent meta-data get name)"
     plugins:
       - docker#v5.13.0:
           image: "golang:1.15"
