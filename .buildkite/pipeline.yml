@@ -4,9 +4,9 @@ steps:
       - "go build -o hello-app ./hello"
       - "buildkite-agent artifact upload hello-app"
     plugins:
-      - docker#v5.11.0:
+      - docker#v5.13.0:
           image: "golang:1.15"
-          propagate-agent-access: true
+          mount-buildkite-agent: true
 
   - wait
 
@@ -16,6 +16,6 @@ steps:
       - "chmod +x hello-app"
       - "./hello-app Buildkite"
     plugins:
-      - docker#v5.11.0:
+      - docker#v5.13.0:
           image: "golang:1.15"
-          propagate-agent-access: true
+          mount-buildkite-agent: true
