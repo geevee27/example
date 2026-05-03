@@ -1,0 +1,30 @@
+steps:
+  - label: ":go: Build"
+    agents:
+      queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
+    commands:
+      - "go build -o hello-app ./hello"
+      - "buildkite-agent artifact upload hello-app"
+    plugins:
+      - docker#v5.13.0:
+          image: "golang:1.18"
+          mount-buildkite-agent: true
+
+  - block: "Name"
+    prompt: "What is your name?"
+    fields:
+      - text: "Name"
+        key: "name"
+        required: true
+
+  - label: ":rocket: Run"
+    agents:
+      queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
+    commands:
+      - "buildkite-agent artifact download hello-app ."
+      - "chmod +x hello-app"
+      - "./hello-app $$(buildkite-agent meta-data get name)"
+    plugins:
+      - docker#v5.13.0:
+          image: "golang:1.18"
+          mount-buildkite-agent: true
