@@ -1,7 +1,7 @@
 steps:
   - label: ":go: Build"
     agents:
-      queue: "self-hosted-agent"
+      queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
     commands:
       - "go build -o hello-app ./hello"
       - "buildkite-agent artifact upload hello-app"
@@ -19,7 +19,7 @@ steps:
 
   - label: ":rocket: Run"
     agents:
-      queue: "self-hosted-agent"
+      queue: "${BUILDKITE_AGENT_META_DATA_QUEUE:-default}"
     commands:
       - "buildkite-agent artifact download hello-app ."
       - "chmod +x hello-app"
